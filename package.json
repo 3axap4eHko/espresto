@@ -1,0 +1,18 @@
+{
+  "name": "espresto",
+  "version": "1.0.0",
+  "description": "RestAPI framework based on express framework",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/3axap4eHko/espresto.git"
+  },
+  "author": "Ivan Zaakharchenko <3axap4eHko@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/3axap4eHko/espresto/issues"
+  },
+  "homepage": "https://github.com/3axap4eHko/espresto#readme"
+}
