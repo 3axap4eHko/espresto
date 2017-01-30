@@ -1,0 +1,24 @@
+server:
+  protocol: http
+  hostname: localhost
+  port: 8989
+
+directories:
+  controllers: controllers
+
+routes:
+  -
+    path: "/test/:a/:b/:c"
+    defaults:
+      __controller: home
+  -
+    path: "/:id"
+    controller: "home"
+    routes:
+      -
+        path: "/about"
+        controller: "about"
+
+  -
+    path: "/about"
+    controller: "about"
