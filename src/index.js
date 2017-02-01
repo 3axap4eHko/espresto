@@ -1,12 +1,12 @@
 'use strict';
 
-const Path = require('path');
-const http = require('http');
-const https = require('https');
-const Logger = require('morgan');
-const Config = require('config');
-const Glob = require('glob');
-const {Request, Dispatcher} = require('ex-stream').default;
+import Path from 'path';
+import http from 'http';
+import https from 'https';
+import Logger from 'morgan';
+import Config from 'config';
+import Glob from 'glob';
+import Request from 'ex-stream/Request';
 
 import Router from './Router';
 import Route from './Route';
@@ -24,19 +24,17 @@ function App() {
   const router = new Router({routes:[]});
 
   Route.setRouter(router);
-  const controllerList = Glob.sync(`${controllerPath}/**/[A-Z]*.js`).map(require);
-  process.exit(0);
+  Glob.sync(`${controllerPath}/**/[A-Z]*.js`).map(require);
 
   const protocolFactory = protocols[protocol];
-
-  const actions = [];
-
-  const dispatcher = new Dispatcher(actions);
 
   const server = protocolFactory.createServer((req, res) => {
     Request
       .request(req)
-      .pipe(res);
+      .on('data', data => {
+        console.log(data);
+        res.end();
+      });
   });
 
   server.listen(port, hostname, () => {
