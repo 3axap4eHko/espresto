@@ -1,5 +1,6 @@
 import CompiledPattern from 'uriil/CompiledPattern';
 import { requiredArgument, maskToRegexp, regexp } from './utils';
+
 const _routes = Symbol('routes');
 const _changed = Symbol('changed');
 
@@ -56,13 +57,9 @@ function getRoutes(currentRule = {}, parentRule = defaultRule) {
 }
 
 function match(request, route) {
-  if (!route.method.test(request.method)) {
-    return false;
-  }
-  if (!route.headers.every(([name, expr]) => expr.test(request.headers[name]))) {
-    return false;
-  }
-  return route.pattern.match(request.uri.path);
+  return route.method.test(request.method) &&
+    route.headers.every(([name, expr]) => expr.test(request.headers[name])) &&
+    route.compiled.match(request.uri.path);
 }
 
 function prioritize({ priorityA = 10 }, { priorityB = 10 }) {
