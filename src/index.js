@@ -1,5 +1,3 @@
-'use strict';
-
 import Path from 'path';
 import http from 'http';
 import https from 'https';
@@ -7,6 +5,7 @@ import Logger from 'morgan';
 import Config from 'config';
 import Glob from 'glob';
 import Request from 'ex-stream/Request';
+import Dispatcher from 'ex-stream/Dispatcher';
 
 import Router from './Router';
 import Route from './Route';
@@ -31,6 +30,7 @@ function App() {
   const server = protocolFactory.createServer((req, res) => {
     Request
       .request(req)
+      .pipe(Dispatcher)
       .on('data', data => {
         console.log(data);
         res.end();

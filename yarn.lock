@@ -1253,9 +1253,11 @@ event-stream@~3.3.0:
     stream-combiner "~0.0.4"
     through "~2.3.1"
 
-ex-stream@^1.1.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/ex-stream/-/ex-stream-1.1.1.tgz#cd3575314374201b74baea1076246ae53f7cf835"
+ex-stream@^1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/ex-stream/-/ex-stream-1.3.1.tgz#2aa16ebcf6bd8cc46ae186205dee62eb3ceeabcb"
+  dependencies:
+    uriil "^1.0.1"
 
 exit-hook@^1.0.0:
   version "1.1.1"
@@ -3322,6 +3324,10 @@ update-notifier@0.5.0:
     repeating "^1.1.2"
     semver-diff "^2.0.0"
     string-length "^1.0.0"
+
+uriil@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/uriil/-/uriil-1.0.1.tgz#a2f2fa96555cad213737acb46674c8e424b14f23"
 
 user-home@^1.1.1:
   version "1.1.1"
