@@ -17,11 +17,12 @@
   "homepage": "https://github.com/3axap4eHko/espresto#readme",
   "dependencies": {
     "config": "^1.24.0",
-    "ex-stream": "^1.1.0",
+    "ex-stream": "^1.2.0",
     "express": "^4.14.0",
     "glob": "^7.1.1",
     "js-yaml": "^3.7.0",
-    "morgan": "^1.7.0"
+    "morgan": "^1.7.0",
+    "uriil": "^1.0.1"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",

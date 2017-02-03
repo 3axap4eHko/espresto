@@ -10,31 +10,33 @@ import Request from 'ex-stream/Request';
 
 import Router from './Router';
 import Route from './Route';
+import dispatch from './Dispatcher';
+import Render from './Render';
 
 const protocols = {
   http,
   https
 };
 
-function App() {
-  const {hostname, port, protocol} = Config.get('server');
-  const {controllers: controllersDir} = Config.get('directories');
+function App(options = {}) {
+  const { middlestream } = options;
+  const { hostname, port, protocol } = Config.get('server');
+  const { controllers: controllersDir } = Config.get('directories');
   const currentDir = process.cwd();
   const controllerPath = Path.join(currentDir, controllersDir);
-  const router = new Router({routes:[]});
+  const router = new Router({ routes: [] });
 
-  Route.setRouter(router);
+  Route.setRouter(router, Constructor => new Constructor());
   Glob.sync(`${controllerPath}/**/[A-Z]*.js`).map(require);
 
   const protocolFactory = protocols[protocol];
 
   const server = protocolFactory.createServer((req, res) => {
+
     Request
       .request(req)
-      .on('data', data => {
-        console.log(data);
-        res.end();
-      });
+      .pipe(dispatch(router))
+      .pipe(Render.render(res));
   });
 
   server.listen(port, hostname, () => {

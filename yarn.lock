@@ -708,8 +708,8 @@ basic-auth@~1.0.3:
   resolved "https://registry.yarnpkg.com/basic-auth/-/basic-auth-1.0.4.tgz#030935b01de7c9b94a824b29f3fccb750d3a5290"
 
 bcrypt-pbkdf@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.0.tgz#3ca76b85241c7170bf7d9703e7b9aa74630040d4"
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.1.tgz#63bc5dcb61331b92bc05fd528953c33462a06f8d"
   dependencies:
     tweetnacl "^0.14.3"
 
@@ -1253,9 +1253,9 @@ event-stream@~3.3.0:
     stream-combiner "~0.0.4"
     through "~2.3.1"
 
-ex-stream@^1.1.0:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/ex-stream/-/ex-stream-1.1.1.tgz#cd3575314374201b74baea1076246ae53f7cf835"
+ex-stream@^1.2.0:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/ex-stream/-/ex-stream-1.2.1.tgz#645eae90a975c8bcf0b763b80f1b56f031d0cf06"
 
 exit-hook@^1.0.0:
   version "1.1.1"
@@ -2444,8 +2444,8 @@ nested-error-stacks@^1.0.0:
     inherits "~2.0.1"
 
 node-pre-gyp@^0.6.29:
-  version "0.6.32"
-  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.6.32.tgz#fc452b376e7319b3d255f5f34853ef6fd8fe1fd5"
+  version "0.6.33"
+  resolved "https://registry.yarnpkg.com/node-pre-gyp/-/node-pre-gyp-0.6.33.tgz#640ac55198f6a925972e0c16c4ac26a034d5ecc9"
   dependencies:
     mkdirp "~0.5.1"
     nopt "~3.0.6"
@@ -3322,6 +3322,10 @@ update-notifier@0.5.0:
     repeating "^1.1.2"
     semver-diff "^2.0.0"
     string-length "^1.0.0"
+
+uriil@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/uriil/-/uriil-1.0.1.tgz#a2f2fa96555cad213737acb46674c8e424b14f23"
 
 user-home@^1.1.1:
   version "1.1.1"
