@@ -1,6 +1,7 @@
 import CompiledPattern from 'uriil/CompiledPattern';
 import { requiredArgument, maskToRegexp, regexp } from './utils';
 
+const _di = Symbol('di');
 const _routes = Symbol('routes');
 const _changed = Symbol('changed');
 
@@ -59,17 +60,22 @@ function getRoutes(currentRule = {}, parentRule = defaultRule) {
 function match(request, route) {
   return route.method.test(request.method) &&
     route.headers.every(([name, expr]) => expr.test(request.headers[name])) &&
-    route.compiled.match(request.uri.path);
+    route.pattern.match(request.uri.path);
 }
 
 function prioritize({ priorityA = 10 }, { priorityB = 10 }) {
   return priorityA - priorityB;
 }
 
-class Router {
-  constructor() {
+let defaultRouter = null;
+let defaultFactory = Constructor => new Constructor();
+
+export default class Router {
+  constructor(di,routes) {
+    this[_di] = di;
     this[_routes] = [];
     this[_changed] = false;
+    defaultRouter = this;
   }
 
   addRule(rule) {
@@ -94,4 +100,20 @@ class Router {
   }
 }
 
-export default Router;
+export const Route = ({path = requiredArgument('Route.path'), method = 'GET', defaults = {}, headers = [], priority = 10}) => {
+  if (!(defaultRouter instanceof Router)) {
+    throw new Error('No default router found');
+  }
+  return function ({constructor}, key) {
+    defaultRouter.addRule({
+      path,
+      method,
+      defaults,
+      headers,
+      priority,
+      action(...args) {
+        defaultFactory(constructor)[key](...args);
+      }
+    });
+  };
+};

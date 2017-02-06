@@ -1,12 +1,9 @@
 'use strict';
 
-import Route from '../../src/Route';
+import Route from '../../src/decorators/Route';
 import Render from '../../src/Render';
 
 class About {
-  constructor(...args) {
-    console.log(...args)
-  }
   @Route({ path: '/' })
   index() {
     return {id: 1};

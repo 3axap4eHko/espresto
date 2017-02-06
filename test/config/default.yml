@@ -6,7 +6,7 @@ server:
 directories:
   controllers: controllers
 
-routes:
+routes: &ROUTES
   -
     path: "/test/:a/:b/:c"
     defaults:
@@ -22,3 +22,10 @@ routes:
   -
     path: "/about"
     controller: "about"
+
+test: !!include "test.yml"
+
+services:
+  router: {args: ["$di", *ROUTES], classOf: "../src/Router"}
+  serverOptions: {args: ["ssl/private.key", "ssl/certificate.crt"], classOf: "../src/Router"}
+  server: {args: ["$ssl"], classOf: "../src/Router"}
