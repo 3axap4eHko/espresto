@@ -8,9 +8,16 @@ server:
 router:
   controllerDir: "controllers"
   controllerPattern: "[A-Z]*Controller.js"
+  defaultController: "../src/DefaultController"
 
 services:
-  server: {args: ["$config"], factory: "../src/Server", shared: true}
-  router: {args: ["$config"], classOf: "../src/Router", shared: true}
-  dispatcher: {args: ["$router"], classOf: "../src/Dispatcher"}
-  render: {args: ["$config"], factory: "../src/Render", shared: true}
+  middleware: {args: ["$di"], factory: "../src/Middleware"}
+  server:     {args: ["$config"], factory: "../src/Server"}
+  router:     {args: ["$config"], classOf: "../src/Router"}
+  dispatcher: {args: ["$router"], classOf: "../src/Dispatcher", shared: false}
+  render:     {args: ["$config"], factory: "../src/Render"}
+  logger:     {args: ["combined"], factory: "morgan"}
+
+middleware:
+  - "logger"
+  - "dispatcher"

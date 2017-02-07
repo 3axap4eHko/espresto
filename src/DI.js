@@ -20,9 +20,12 @@ class DI {
     this[_Services] = {};
   }
 
-  static fromConfig(servicesConfig) {
+  static fromConfig(config) {
     const di = new DI();
-    each(servicesConfig, ({ classOf, factory, instance, args, tags, shared }, name) => {
+    di.set('di', di);
+    di.set('config', config);
+
+    each(config.services, ({ classOf, factory, instance, args, tags, shared }, name) => {
       if (typeof classOf === 'string') {
         classOf = require(classOf).default;
       }

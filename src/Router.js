@@ -68,8 +68,8 @@ function match(request, route) {
     route.pattern.match(request.uri.path);
 }
 
-function prioritize({ priorityA = 10 }, { priorityB = 10 }) {
-  return priorityA - priorityB;
+function prioritize({ priority: priorityA = 10 }, { priority: priorityB = 10 }) {
+  return Math.sign(priorityB - priorityA);
 }
 
 let defaultRouter = null;
@@ -81,15 +81,16 @@ export default class Router {
     this[_changed] = false;
     defaultRouter = this;
 
-    const {controllerDir, controllerPattern} = router;
+    const {controllerDir, controllerPattern, defaultController} = router;
 
     const currentDir = process.cwd();
     const controllerPath = Path.join(currentDir, controllerDir);
-    Glob.sync(`${controllerPath}/**/${controllerPattern}`).map(require);
+    Glob.sync(`${controllerPath}/**/${controllerPattern}`)
+      .concat([Path.join(currentDir, defaultController)])
+      .map(require);
   }
 
   addRule(rule) {
-    console.log(rule);
     this[_routes] = this[_routes].concat(getRoutes(rule));
     this[_changed] = true;
 
@@ -99,7 +100,6 @@ export default class Router {
     return this[_routes];
   }
   match(request) {
-
     if (this[_changed]) {
       this[_routes] = this[_routes].sort(prioritize);
       this[_changed] = false;
@@ -125,7 +125,7 @@ export const Route = ({ path = requiredArgument('Route.path'), method = 'GET', d
       headers,
       priority,
       action(...args) {
-        defaultFactory(constructor)[key](...args);
+        return defaultFactory(constructor)[key](...args);
       }
     });
   };
