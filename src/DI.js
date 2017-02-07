@@ -1,7 +1,7 @@
-import {isFunction, isNotEmptyString, isStructure} from 'yyf-core/check';
-import {toArray} from 'yyf-core/cast';
-import {create, defineGetter} from 'yyf-core/reflection';
-import {filter, first, values, keys} from 'yyf-core/iterate';
+import { isFunction, isNotEmptyString, isStructure } from 'yyf-core/check';
+import { toArray } from 'yyf-core/cast';
+import { create, defineGetter } from 'yyf-core/reflection';
+import { each, filter, first, values, keys } from 'yyf-core/iterate';
 
 function getInstance(service, args) {
   if (isFunction(service.factory)) {
@@ -16,10 +16,28 @@ function getInstance(service, args) {
 const _Services = Symbol('services');
 
 class DI {
-  constructor(){
+  constructor() {
     this[_Services] = {};
   }
-  static createService(name, {classOf = null, factory = null, shared = true, instance = null, args = [], tags = []} = {}) {
+
+  static fromConfig(servicesConfig) {
+    const di = new DI();
+    each(servicesConfig, ({ classOf, factory, instance, args, tags, shared }, name) => {
+      if (typeof classOf === 'string') {
+        classOf = require(classOf).default;
+      }
+      if (typeof factory === 'string') {
+        factory = require(factory).default;
+      }
+      if (typeof instance === 'string') {
+        instance = require(instance).default;
+      }
+      di.register(name, { classOf, factory, instance, args, tags, shared });
+    });
+    return di;
+  }
+
+  static createService(name, { classOf = null, factory = null, shared = true, instance = null, args = [], tags = [] } = {}) {
     if (!isNotEmptyString(name)) {
       throw new Error(`Service name should be a not empty string but '${name}' given`);
     }
@@ -37,7 +55,7 @@ class DI {
     }
     properties.tags = toArray(tags || []);
     return {
-      get name () {
+      get name() {
         return properties.name;
       },
       get classOf() {
@@ -66,6 +84,7 @@ class DI {
       }
     };
   }
+
   proxifyService(target, serviceName) {
     const serviceKey = `$${serviceName}`;
     if (!(serviceKey in target)) {
@@ -73,16 +92,19 @@ class DI {
     }
     return this;
   }
-  has (name) {
+
+  has(name) {
     return name in this[_Services];
   }
-  register (name, options) {
+
+  register(name, options) {
     this.proxifyService(this, name);
     this[_Services][name] = DI.createService(name, options);
 
     return this[_Services][name];
   }
-  set (name, instance, options) {
+
+  set(name, instance, options) {
     const service = DI.createService(name, options);
     service.instance = instance;
     service.shared = true;
@@ -91,18 +113,22 @@ class DI {
 
     return instance;
   }
-  get (name, args) {
+
+  get(name, args) {
     if (!this.has(name)) {
       throw new Error(`Service '${name}' not defined`);
     }
     return this.resolveService(this[_Services][name], args);
   }
+
   find(callback) {
-    return filter(this[_Services], callback );
+    return filter(this[_Services], callback);
   }
-  findFirst (callback) {
-    return first(this[_Services], callback );
+
+  findFirst(callback) {
+    return first(this[_Services], callback);
   }
+
   resolveService(service, args) {
     if (service.shared && service.instance) {
       return service.instance;
@@ -114,11 +140,13 @@ class DI {
     }
     return instance;
   }
+
   resolveArg(arg) {
     const serviceArg = (arg || '').toString();
     return !serviceArg.indexOf('$') ? this.get(serviceArg.substr(1)) : arg;
   }
-  get services(){
+
+  get services() {
     return keys(this[_Services]);
   }
 }

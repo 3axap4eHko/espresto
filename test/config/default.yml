@@ -1,31 +1,16 @@
 server:
-  protocol: http
+  protocol: https
   hostname: localhost
   port: 8989
+  privateKey: "ssl/private.key"
+  certificate: "ssl/certificate.crt"
 
-directories:
-  controllers: controllers
-
-routes: &ROUTES
-  -
-    path: "/test/:a/:b/:c"
-    defaults:
-      __controller: home
-  -
-    path: "/:id"
-    controller: "home"
-    routes:
-      -
-        path: "/about"
-        controller: "about"
-
-  -
-    path: "/about"
-    controller: "about"
-
-test: !!include "test.yml"
+router:
+  controllerDir: "controllers"
+  controllerPattern: "[A-Z]*Controller.js"
 
 services:
-  router: {args: ["$di", *ROUTES], classOf: "../src/Router"}
-  serverOptions: {args: ["ssl/private.key", "ssl/certificate.crt"], classOf: "../src/Router"}
-  server: {args: ["$ssl"], classOf: "../src/Router"}
+  server: {args: ["$config"], factory: "../src/Server", shared: true}
+  router: {args: ["$config"], classOf: "../src/Router", shared: true}
+  dispatcher: {args: ["$router"], classOf: "../src/Dispatcher"}
+  render: {args: ["$config"], factory: "../src/Render", shared: true}

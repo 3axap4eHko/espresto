@@ -11,11 +11,13 @@ function fileExists(filename) {
   }
 }
 
-function loadConfig(filename, schema) {
+function loadConfig(filename, schema, throwable = false) {
   const currentDir = process.cwd();
   try {
     process.chdir(dirname(filename));
-    return yaml.load(readFileSync(filename, 'utf8'), {schema, filename});
+    return yaml.load(readFileSync(filename, 'utf8'), { schema, filename });
+  } catch (e) {
+    return {};
   } finally {
     process.chdir(currentDir);
   }

@@ -1,7 +1,8 @@
+import Path from 'path';
+import Glob from 'glob';
 import CompiledPattern from 'uriil/CompiledPattern';
 import { requiredArgument, maskToRegexp, regexp } from './utils';
 
-const _di = Symbol('di');
 const _routes = Symbol('routes');
 const _changed = Symbol('changed');
 
@@ -47,13 +48,17 @@ function mergeRules(ruleA, ruleB) {
 }
 
 function getRoutes(currentRule = {}, parentRule = defaultRule) {
-  const mergedRule = mergeRules(parentRule, currentRule);
-  const { routes = [] } = mergedRule;
+  try {
+    const mergedRule = mergeRules(parentRule, currentRule);
+    const { routes = [] } = mergedRule;
 
-  if (!routes.length) {
-    return [buildRoute(mergedRule)]
-  } else {
-    return routes.reduce((result, rule) => result.concat(getRoutes(rule, mergedRule)), []);
+    if (!routes.length) {
+      return [buildRoute(mergedRule)]
+    } else {
+      return routes.reduce((result, rule) => result.concat(getRoutes(rule, mergedRule)), []);
+    }
+  } catch (e) {
+    throw e;
   }
 }
 
@@ -71,20 +76,28 @@ let defaultRouter = null;
 let defaultFactory = Constructor => new Constructor();
 
 export default class Router {
-  constructor(di,routes) {
-    this[_di] = di;
+  constructor({router}) {
     this[_routes] = [];
     this[_changed] = false;
     defaultRouter = this;
+
+    const {controllerDir, controllerPattern} = router;
+
+    const currentDir = process.cwd();
+    const controllerPath = Path.join(currentDir, controllerDir);
+    Glob.sync(`${controllerPath}/**/${controllerPattern}`).map(require);
   }
 
   addRule(rule) {
+    console.log(rule);
     this[_routes] = this[_routes].concat(getRoutes(rule));
     this[_changed] = true;
 
     return this;
   }
-
+  get routes() {
+    return this[_routes];
+  }
   match(request) {
 
     if (this[_changed]) {
@@ -100,11 +113,11 @@ export default class Router {
   }
 }
 
-export const Route = ({path = requiredArgument('Route.path'), method = 'GET', defaults = {}, headers = [], priority = 10}) => {
+export const Route = ({ path = requiredArgument('Route.path'), method = 'GET', defaults = {}, headers = [], priority = 10 }) => {
   if (!(defaultRouter instanceof Router)) {
     throw new Error('No default router found');
   }
-  return function ({constructor}, key) {
+  return function ({ constructor }, key) {
     defaultRouter.addRule({
       path,
       method,

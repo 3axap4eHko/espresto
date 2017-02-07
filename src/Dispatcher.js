@@ -4,26 +4,18 @@ import { Transform } from 'stream';
 
 const _router = Symbol('Router');
 
-class Dispatcher extends Transform {
-  static dispatch(router) {
-    return new Dispatcher({router});
-  }
-  constructor({router, ...options }) {
-    super({ ...options, objectMode: true });
+export default class Dispatcher extends Transform {
+  constructor(router) {
+    super({objectMode: true });
     this[_router] = router;
   }
 
   _transform(request, enc, next) {
-    const matched = this[_router].match(request);
-
+    const {route, params} = this[_router].match(request);
     new Promise(resolve => {
-      resolve(matched.action(matched.params));
+      resolve(route.action(params));
     })
       .catch(error => next(error))
       .then(result => next(null, result));
   }
 }
-
-export default function dispatch(router) {
-  return new Dispatcher({router});
-};

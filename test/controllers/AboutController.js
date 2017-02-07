@@ -1,7 +1,6 @@
 'use strict';
 
-import Route from '../../src/decorators/Route';
-import Render from '../../src/Render';
+import {Route} from '../../src/Router';
 
 class About {
   @Route({ path: '/' })
